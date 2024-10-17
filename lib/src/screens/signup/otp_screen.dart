@@ -105,7 +105,7 @@ class _OtpScreenState extends State<OtpScreen> {
                     );
                   },
                   child: const Text(
-                    "Resend code ",
+                    "Resend code in 60s ",
                     style: TextStyle(
                       color: BaseColor.primaryColor,
                       fontSize: 16,
