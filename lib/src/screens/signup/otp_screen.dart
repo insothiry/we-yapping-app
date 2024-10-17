@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
 import 'package:we_yapping_app/src/screens/home/home_screen.dart';
+import 'package:we_yapping_app/src/screens/signup/create_account_screen.dart';
 import 'package:we_yapping_app/src/utils/base_colors.dart';
 import 'package:we_yapping_app/src/widgets/base_button.dart';
 
@@ -78,14 +79,11 @@ class _OtpScreenState extends State<OtpScreen> {
             BaseButton(
               text: "Verify",
               onPressed: () {
-                if (_formKey.currentState!.validate()) {
-                  // Handle verification logic here
-                  print("Verifying code: $_currentText");
-                  Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(builder: (_) => const HomeScreen()),
-                  );
-                }
+                print("Verifying code: $_currentText");
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(builder: (_) => CreateAccountScreen()),
+                );
               },
             ),
             Row(
@@ -98,14 +96,9 @@ class _OtpScreenState extends State<OtpScreen> {
                   ),
                 ),
                 TextButton(
-                  onPressed: () {
-                    Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(builder: (_) => const HomeScreen()),
-                    );
-                  },
+                  onPressed: () {},
                   child: const Text(
-                    "Resend code in 60s ",
+                    "Resend code",
                     style: TextStyle(
                       color: BaseColor.primaryColor,
                       fontSize: 16,

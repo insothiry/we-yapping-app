@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
+import 'package:we_yapping_app/src/screens/login/login_screen.dart';
 import 'package:we_yapping_app/src/screens/signup/otp_screen.dart';
 import 'package:we_yapping_app/src/utils/base_colors.dart';
 import 'package:we_yapping_app/src/widgets/base_button.dart';
@@ -96,7 +97,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   onPressed: () {
                     Navigator.pushReplacement(
                       context,
-                      MaterialPageRoute(builder: (_) => SignUpScreen()),
+                      MaterialPageRoute(builder: (_) => const LoginScreen()),
                     );
                   },
                   child: const Text(
