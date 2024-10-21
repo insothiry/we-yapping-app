@@ -6,12 +6,14 @@ import 'package:we_yapping_app/src/utils/base_colors.dart';
 import 'package:we_yapping_app/src/widgets/base_button.dart';
 
 class SignUpScreen extends StatefulWidget {
+  const SignUpScreen({super.key});
+
   @override
-  _SignUpScreenState createState() => _SignUpScreenState();
+  SignUpScreenState createState() => SignUpScreenState();
 }
 
-class _SignUpScreenState extends State<SignUpScreen> {
-  final TextEditingController _phoneController = TextEditingController();
+class SignUpScreenState extends State<SignUpScreen> {
+  // final TextEditingController _phoneController = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   FocusNode focusNode = FocusNode();
 
@@ -19,7 +21,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
     if (_formKey.currentState!.validate()) {
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (_) => OtpScreen()),
+        MaterialPageRoute(builder: (_) => const OtpScreen()),
       );
     }
   }
@@ -70,10 +72,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     ),
                     languageCode: "en",
                     onChanged: (phone) {
-                      print(phone.completeNumber);
+                      // print(phone.completeNumber);
                     },
                     onCountryChanged: (country) {
-                      print('Country changed to: ' + country.name);
+                      // print('Country changed to: ' + country.name);
                     },
                   ),
                   const SizedBox(height: 10),

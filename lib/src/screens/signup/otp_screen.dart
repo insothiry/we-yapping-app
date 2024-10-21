@@ -1,18 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
-import 'package:we_yapping_app/src/screens/home/home_screen.dart';
 import 'package:we_yapping_app/src/screens/signup/create_account_screen.dart';
 import 'package:we_yapping_app/src/utils/base_colors.dart';
 import 'package:we_yapping_app/src/widgets/base_button.dart';
 
 class OtpScreen extends StatefulWidget {
+  const OtpScreen({super.key});
+
   @override
-  _OtpScreenState createState() => _OtpScreenState();
+  OtpScreenState createState() => OtpScreenState();
 }
 
-class _OtpScreenState extends State<OtpScreen> {
-  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  TextEditingController _pinController = TextEditingController();
+class OtpScreenState extends State<OtpScreen> {
+  // final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  final TextEditingController _pinController = TextEditingController();
   String _currentText = '';
   FocusNode focusNode = FocusNode();
 
@@ -72,17 +73,18 @@ class _OtpScreenState extends State<OtpScreen> {
               keyboardType: TextInputType.number,
               onCompleted: (value) {
                 // Handle verification code submission
-                print("Verification code: $value");
+                // print("Verification code: $value");
               },
             ),
             const SizedBox(height: 20),
             BaseButton(
               text: "Verify",
               onPressed: () {
-                print("Verifying code: $_currentText");
+                // print("Verifying code: $_currentText");
                 Navigator.pushReplacement(
                   context,
-                  MaterialPageRoute(builder: (_) => CreateAccountScreen()),
+                  MaterialPageRoute(
+                      builder: (_) => const CreateAccountScreen()),
                 );
               },
             ),
