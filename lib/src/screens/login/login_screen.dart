@@ -1,4 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:get/route_manager.dart';
+import 'package:we_yapping_app/src/screens/signup/otp_screen.dart';
+import 'package:we_yapping_app/src/screens/signup/signup_screen.dart';
+import 'package:we_yapping_app/src/utils/base_colors.dart';
+import 'package:we_yapping_app/src/widgets/base_button.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
@@ -18,10 +23,8 @@ class LoginScreenState extends State<LoginScreen> {
       _isOtpSent = true;
       _verificationId = '123456';
     });
-    // Send OTP logic goes here
   }
 
-  // Function to verify OTP (replace with your backend call)
   void _verifyOtp() {
     if (_otpController.text == _verificationId) {
       // Proceed to next screen or show success
@@ -67,43 +70,37 @@ class LoginScreenState extends State<LoginScreen> {
               ),
             ),
             const SizedBox(height: 20),
-            if (_isOtpSent) ...[
-              TextField(
-                controller: _otpController,
-                keyboardType: TextInputType.number,
-                decoration: InputDecoration(
-                  labelText: 'OTP',
-                  prefixIcon: const Icon(Icons.lock),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10.0),
+            BaseButton(
+              text: 'Send OTP',
+              onPressed: () {
+                Get.to(() => const OtpScreen());
+              },
+            ),
+            const SizedBox(height: 20),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Text(
+                  "Don't have an account?",
+                  style: TextStyle(
+                    fontSize: 16,
                   ),
                 ),
-              ),
-              const SizedBox(height: 20),
-              ElevatedButton(
-                onPressed: _verifyOtp,
-                style: ElevatedButton.styleFrom(
-                  minimumSize: const Size(double.infinity, 50),
+                TextButton(
+                  onPressed: () {
+                    Get.to(() => const SignUpScreen());
+                  },
+                  child: const Text(
+                    "Sign up here",
+                    style: TextStyle(
+                      color: BaseColor.primaryColor,
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
                 ),
-                child: const Text('Verify OTP'),
-              ),
-            ] else ...[
-              ElevatedButton(
-                onPressed: _sendOtp,
-                style: ElevatedButton.styleFrom(
-                  minimumSize: const Size(double.infinity, 50),
-                ),
-                child: const Text('Send OTP'),
-              ),
-            ],
-            const SizedBox(height: 20),
-            TextButton(
-              onPressed: () {
-                // Navigate to Sign Up Screen or perform any action
-                // Replace with your Sign Up Screen route
-              },
-              child: const Text("Don't have an account? Sign Up here."),
-            ),
+              ],
+            )
           ],
         ),
       ),

@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:we_yapping_app/src/screens/home/home_screen.dart';
 import 'dart:io';
+
+import 'package:we_yapping_app/src/widgets/base_button.dart';
 
 class CreateAccountScreen extends StatefulWidget {
   const CreateAccountScreen({super.key});
@@ -74,16 +78,12 @@ class CreateAccountScreenState extends State<CreateAccountScreen> {
                 ),
               ),
               const SizedBox(height: 20),
-              ElevatedButton(
+              BaseButton(
+                text: 'Create Account',
                 onPressed: () {
-                  if (_formKey.currentState!.validate()) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('Account Created')),
-                    );
-                  }
+                  Get.off(() => const HomeScreen());
                 },
-                child: const Text('Create Account'),
-              ),
+              )
             ],
           ),
         ),

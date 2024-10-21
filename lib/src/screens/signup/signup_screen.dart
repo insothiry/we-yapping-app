@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
 import 'package:we_yapping_app/src/screens/login/login_screen.dart';
 import 'package:we_yapping_app/src/screens/signup/otp_screen.dart';
@@ -19,10 +20,7 @@ class SignUpScreenState extends State<SignUpScreen> {
 
   void _signUp() {
     if (_formKey.currentState!.validate()) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (_) => const OtpScreen()),
-      );
+      Get.to(() => const OtpScreen());
     }
   }
 
@@ -97,10 +95,7 @@ class SignUpScreenState extends State<SignUpScreen> {
                 ),
                 TextButton(
                   onPressed: () {
-                    Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(builder: (_) => const LoginScreen()),
-                    );
+                    Get.to(() => const LoginScreen());
                   },
                   child: const Text(
                     "Login here",
