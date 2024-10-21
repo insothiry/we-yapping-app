@@ -31,7 +31,7 @@ class OnboardingScreenState extends State<OnboardingScreen> {
             padding: const EdgeInsets.only(top: 100, left: 100, right: 100),
             child: Image.asset('assets/logos/image.png'),
           ),
-          Container(
+          SizedBox(
             height: 500,
             width: double.infinity,
             child: PageView(
@@ -82,7 +82,7 @@ class OnboardingScreenState extends State<OnboardingScreen> {
                   // Navigate to sign-up screen
                   Navigator.pushReplacement(
                     context,
-                    MaterialPageRoute(builder: (_) => SignUpScreen()),
+                    MaterialPageRoute(builder: (_) => const SignUpScreen()),
                   );
                 } else {
                   _pageController.nextPage(
@@ -110,7 +110,7 @@ class OnboardingScreenState extends State<OnboardingScreen> {
                     onPressed: () {
                       Navigator.pushReplacement(
                         context,
-                        MaterialPageRoute(builder: (_) => SignUpScreen()),
+                        MaterialPageRoute(builder: (_) => const SignUpScreen()),
                       );
                     },
                     child: const Text(
