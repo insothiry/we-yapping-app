@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
-import 'package:we_yapping_app/src/screens/home/home_screen.dart';
 import 'package:we_yapping_app/src/screens/signup/create_account_screen.dart';
-import 'package:we_yapping_app/src/screens/signup/signup_screen.dart';
 import 'package:we_yapping_app/src/utils/base_colors.dart';
 import 'package:we_yapping_app/src/widgets/base_button.dart';
 
@@ -83,7 +81,7 @@ class OtpScreenState extends State<OtpScreen> {
             BaseButton(
               text: 'Verify',
               onPressed: () {
-                Get.off(() => const HomeScreen());
+                Get.offAll(() => const CreateAccountScreen());
               },
             ),
             Row(
