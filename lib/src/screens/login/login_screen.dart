@@ -27,13 +27,10 @@ class LoginScreenState extends State<LoginScreen> {
 
   void _verifyOtp() {
     if (_otpController.text == _verificationId) {
-      // Proceed to next screen or show success
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('OTP verified successfully!')),
       );
-      // Navigate to next screen or perform actions on successful verification
     } else {
-      // Handle incorrect OTP
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Invalid OTP. Please try again.')),
       );
@@ -56,8 +53,14 @@ class LoginScreenState extends State<LoginScreen> {
       body: Padding(
         padding: const EdgeInsets.all(20.0),
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
           children: [
+            // Add the image here
+            Image.asset(
+              'assets/images/login_image.jpg',
+              height: 300,
+              width: 300,
+            ),
+            const SizedBox(height: 20),
             TextField(
               controller: _phoneController,
               keyboardType: TextInputType.phone,

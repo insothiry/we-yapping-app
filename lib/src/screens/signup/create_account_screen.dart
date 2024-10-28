@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:we_yapping_app/src/screens/home/home_screen.dart';
+import 'package:we_yapping_app/src/screens/bottom_navigation/bottom_navigation.dart';
 import 'dart:io';
 
 import 'package:we_yapping_app/src/widgets/base_button.dart';
@@ -14,11 +14,11 @@ class CreateAccountScreen extends StatefulWidget {
 }
 
 class CreateAccountScreenState extends State<CreateAccountScreen> {
-  final _formKey = GlobalKey<FormState>(); // To validate the form
+  final _formKey = GlobalKey<FormState>();
   final TextEditingController _firstNameController = TextEditingController();
   final TextEditingController _lastNameController = TextEditingController();
 
-  File? _profileImage; // To store the selected profile image
+  File? _profileImage;
 
   // Function to pick the image from gallery
   Future<void> _pickImage() async {
@@ -81,7 +81,7 @@ class CreateAccountScreenState extends State<CreateAccountScreen> {
               BaseButton(
                 text: 'Create Account',
                 onPressed: () {
-                  Get.off(() => const HomeScreen());
+                  Get.off(() => const BottomNavigation());
                 },
               )
             ],
