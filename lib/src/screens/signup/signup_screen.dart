@@ -14,13 +14,13 @@ class SignUpScreen extends StatefulWidget {
 }
 
 class SignUpScreenState extends State<SignUpScreen> {
-  // final TextEditingController _phoneController = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   FocusNode focusNode = FocusNode();
+  String? _phoneNumber;
 
-  void _signUp() {
+  void _sentOtp() {
     if (_formKey.currentState!.validate()) {
-      Get.to(() => const OtpScreen());
+      Get.to(() => OtpScreen(phoneNumber: _phoneNumber!));
     }
   }
 
@@ -51,7 +51,7 @@ class SignUpScreenState extends State<SignUpScreen> {
             ),
             const SizedBox(height: 10),
             const Text(
-              "We will send you 6-digits verification code to your mobile number confirm your account ",
+              "We will send you a 6-digit verification code to your mobile number to confirm your account.",
               style: TextStyle(color: Colors.grey),
             ),
             const SizedBox(height: 10),
@@ -62,23 +62,21 @@ class SignUpScreenState extends State<SignUpScreen> {
                 children: [
                   IntlPhoneField(
                     focusNode: focusNode,
+                    initialCountryCode: 'KH',
                     decoration: const InputDecoration(
                       labelText: 'Phone Number',
                       border: OutlineInputBorder(
                         borderSide: BorderSide(),
                       ),
                     ),
-                    languageCode: "en",
+                    languageCode: "kh",
                     onChanged: (phone) {
-                      // print(phone.completeNumber);
-                    },
-                    onCountryChanged: (country) {
-                      // print('Country changed to: ' + country.name);
+                      _phoneNumber = phone.completeNumber;
                     },
                   ),
                   const SizedBox(height: 10),
                   BaseButton(
-                    onPressed: _signUp,
+                    onPressed: _sentOtp,
                     text: 'Send OTP',
                   ),
                 ],

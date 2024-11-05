@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:we_yapping_app/src/screens/chat/chat_screen.dart';
 import 'package:we_yapping_app/src/utils/base_colors.dart';
 import 'package:we_yapping_app/src/widgets/base_search_bar.dart';
 import 'package:we_yapping_app/src/widgets/story_profile.dart';
@@ -13,29 +15,46 @@ class ChatListScreen extends StatelessWidget {
       'avatar': 'assets/images/avatar1.jpg'
     },
     {
-      'name': 'Naksu Smith',
+      'name': 'Naksu San',
       'message': 'Let\'s catch up tomorrow.',
       'time': '1:15 PM',
       'avatar': 'assets/images/avatar2.jpg'
     },
     {
-      'name': 'Charlie Brown', // Fixed name typo here
+      'name': 'Charlie Brown',
       'message': 'Got the meeting notes!',
       'time': '12:00 PM',
       'avatar': 'assets/images/avatar3.jpg'
     },
     {
-      'name': 'Jungkook Prince',
+      'name': 'Jungkook Love',
       'message': 'See you at the event.',
       'time': '11:45 AM',
       'avatar': 'assets/images/avatar4.jpg'
     },
-    // Add more chat data as needed
+    {
+      'name': 'Lily Blooms',
+      'message': 'Venom is out!!!',
+      'time': '11:20 AM',
+      'avatar': 'assets/images/avatar6.jpg'
+    },
+    {
+      'name': 'Satoru Gojo',
+      'message': 'Lg game ot?',
+      'time': '10:45 AM',
+      'avatar': 'assets/images/avatar7.jpg'
+    },
+    {
+      'name': 'Sunghoon Ice Prince',
+      'message': 'Can we talk a bit?',
+      'time': '8:13 AM',
+      'avatar': 'assets/images/avatar8.jpg'
+    },
   ];
 
   final List<Map<String, String>> stories = [
     {'name': 'Cyrax Johnson', 'avatar': 'assets/images/avatar1.jpg'},
-    {'name': 'Naksu Smith', 'avatar': 'assets/images/avatar2.jpg'},
+    {'name': 'Naksu San', 'avatar': 'assets/images/avatar2.jpg'},
     {
       'name': 'Charlie Brown',
       'avatar': 'assets/images/avatar3.jpg'
@@ -158,6 +177,8 @@ class ChatListItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return Column(
       children: [
         ListTile(
@@ -171,20 +192,24 @@ class ChatListItem extends StatelessWidget {
           ),
           subtitle: Text(
             message,
-            style: const TextStyle(color: Colors.black54),
+            style: TextStyle(
+              color: theme.brightness == Brightness.dark
+                  ? Colors.grey[400]
+                  : Colors.black54,
+            ),
           ),
           trailing: Text(
             time,
             style: const TextStyle(color: Colors.grey),
           ),
           onTap: () {
-            // Navigate to chat screen or perform any action
+            Get.to(ChatScreen());
           },
         ),
         const Divider(
           indent: 80,
           height: 1,
-          color: Colors.black12,
+          // color: Colors.black12,
         )
       ],
     );

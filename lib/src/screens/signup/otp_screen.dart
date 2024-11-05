@@ -6,7 +6,9 @@ import 'package:we_yapping_app/src/utils/base_colors.dart';
 import 'package:we_yapping_app/src/widgets/base_button.dart';
 
 class OtpScreen extends StatefulWidget {
-  const OtpScreen({super.key});
+  final String phoneNumber;
+
+  const OtpScreen({super.key, required this.phoneNumber});
 
   @override
   OtpScreenState createState() => OtpScreenState();
@@ -81,7 +83,9 @@ class OtpScreenState extends State<OtpScreen> {
             BaseButton(
               text: 'Verify',
               onPressed: () {
-                Get.offAll(() => const CreateAccountScreen());
+                Get.offAll(() => CreateAccountScreen(
+                      phoneNumber: widget.phoneNumber,
+                    ));
               },
             ),
             Row(

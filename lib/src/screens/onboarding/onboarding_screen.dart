@@ -12,54 +12,100 @@ class OnboardingScreen extends StatefulWidget {
   OnboardingScreenState createState() => OnboardingScreenState();
 }
 
-class OnboardingScreenState extends State<OnboardingScreen> {
+class OnboardingScreenState extends State<OnboardingScreen>
+    with SingleTickerProviderStateMixin {
   final PageController _pageController = PageController();
   int _currentPage = 0;
+
+  late AnimationController _animationController;
+  late Animation<Offset> _slideAnimation;
+
+  @override
+  void initState() {
+    super.initState();
+    _animationController = AnimationController(
+      duration: const Duration(milliseconds: 500),
+      vsync: this,
+    );
+    _slideAnimation = Tween<Offset>(
+      begin: const Offset(0, 1),
+      end: Offset.zero,
+    ).animate(
+      CurvedAnimation(
+        parent: _animationController,
+        curve: Curves.easeOut,
+      ),
+    );
+  }
 
   @override
   void dispose() {
     _pageController.dispose();
+    _animationController.dispose();
     super.dispose();
+  }
+
+  void _onPageChanged(int page) {
+    setState(() {
+      _currentPage = page;
+      if (_currentPage == 2) {
+        _animationController.forward();
+      } else {
+        _animationController.reset();
+      }
+    });
   }
 
   @override
   Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    final screenHeight = MediaQuery.of(context).size.height;
+
     return Scaffold(
       body: Column(
         children: [
-          // logo
+          // Logo
           Padding(
-            padding: const EdgeInsets.only(top: 100, left: 100, right: 100),
-            child: Image.asset('assets/logos/image.png'),
+            padding: EdgeInsets.only(
+              top: screenHeight * 0.1,
+              left: screenWidth * 0.2,
+              right: screenWidth * 0.2,
+            ),
+            child: Image.asset(
+              'assets/logos/image.png',
+              height: screenHeight * 0.1,
+            ),
           ),
           SizedBox(
-            height: 500,
+            height: screenHeight * 0.5,
             width: double.infinity,
             child: PageView(
               controller: _pageController,
-              onPageChanged: (int page) {
-                setState(() {
-                  _currentPage = page;
-                });
-              },
+              onPageChanged: _onPageChanged,
               children: [
                 buildPage(
                   image: 'assets/images/onboarding1.jpg',
                   title: 'Welcome!',
                   description:
                       'Join us and explore a world of seamless communication.',
+                  screenHeight: screenHeight,
+                  screenWidth: screenWidth,
                 ),
                 buildPage(
                   image: 'assets/images/onboarding2.jpg',
                   title: 'Stay Connected!',
                   description:
                       'Experience messaging like never before, fast and simple.',
+                  screenHeight: screenHeight,
+                  screenWidth: screenWidth,
                 ),
                 buildPage(
                   image: 'assets/images/onboarding3.jpg',
                   title: 'Keep on Yapping!',
                   description:
                       'Chat instantly and yap with your friends effortlessly.',
+                  screenHeight: screenHeight,
+                  screenWidth: screenWidth,
                 ),
               ],
             ),
@@ -76,7 +122,10 @@ class OnboardingScreenState extends State<OnboardingScreen> {
             ),
           ),
           Padding(
-            padding: const EdgeInsets.only(left: 20, right: 20, top: 90),
+            padding: EdgeInsets.symmetric(
+              horizontal: screenWidth * 0.1,
+              vertical: screenHeight * 0.05,
+            ),
             child: BaseButton(
               onPressed: () {
                 if (_currentPage == 2) {
@@ -95,32 +144,38 @@ class OnboardingScreenState extends State<OnboardingScreen> {
               text: _currentPage == 2 ? 'Sign Up with Phone number' : 'Next >>',
             ),
           ),
-
+          // Animated "Already have an account?" text with sliding effect
           if (_currentPage == 2) ...[
-            Center(
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Text(
-                    "Already have an account?",
-                    style: TextStyle(
-                      fontSize: 16,
-                    ),
-                  ),
-                  TextButton(
-                    onPressed: () {
-                      Get.off(() => const SignUpScreen());
-                    },
-                    child: const Text(
-                      "Login here",
-                      style: TextStyle(
-                        color: BaseColor.primaryColor,
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
+            SlideTransition(
+              position: _slideAnimation,
+              child: FadeTransition(
+                opacity: _animationController,
+                child: Center(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Text(
+                        "Already have an account?",
+                        style: TextStyle(
+                          fontSize: 16,
+                        ),
                       ),
-                    ),
+                      TextButton(
+                        onPressed: () {
+                          Get.off(() => const SignUpScreen());
+                        },
+                        child: const Text(
+                          "Login here",
+                          style: TextStyle(
+                            color: BaseColor.primaryColor,
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
-                ],
+                ),
               ),
             ),
           ],
@@ -133,23 +188,33 @@ class OnboardingScreenState extends State<OnboardingScreen> {
     required String image,
     required String title,
     required String description,
+    required double screenHeight,
+    required double screenWidth,
   }) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        Image.asset(image, height: 300),
-        const SizedBox(height: 20),
+        Image.asset(
+          image,
+          height: screenHeight * 0.3,
+          width: screenWidth * 0.8,
+          fit: BoxFit.cover,
+        ),
+        SizedBox(height: screenHeight * 0.02),
         Text(
           title,
-          style: const TextStyle(fontSize: 40, fontWeight: FontWeight.bold),
+          style: TextStyle(
+            fontSize: screenHeight * 0.04,
+            fontWeight: FontWeight.bold,
+          ),
         ),
-        const SizedBox(height: 10),
+        SizedBox(height: screenHeight * 0.01),
         Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 30),
+          padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.1),
           child: Text(
             description,
             textAlign: TextAlign.center,
-            style: const TextStyle(fontSize: 16),
+            style: TextStyle(fontSize: screenHeight * 0.02),
           ),
         ),
       ],

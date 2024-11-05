@@ -12,23 +12,30 @@ class BaseSearchBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Determine current theme brightness
+    final isDarkMode = Theme.of(context).brightness == Brightness.dark;
+
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 15),
       child: Container(
-        height: 40, // Decreased height
+        height: 40,
         padding: const EdgeInsets.symmetric(horizontal: 5),
         decoration: BoxDecoration(
-          color: Colors.grey.withOpacity(0.2),
+          color: isDarkMode ? Colors.grey[700] : Colors.grey[200],
           borderRadius: BorderRadius.circular(30),
         ),
         child: TextField(
           onChanged: onChanged,
+          style: TextStyle(color: isDarkMode ? Colors.white : Colors.black),
           decoration: InputDecoration(
             border: InputBorder.none,
             hintText: hintText,
-            hintStyle: const TextStyle(color: Colors.black54),
-            prefixIcon: const Icon(Icons.search, // Search icon
-                color: Colors.grey),
+            hintStyle:
+                TextStyle(color: isDarkMode ? Colors.white70 : Colors.black54),
+            prefixIcon: Icon(
+              Icons.search,
+              color: isDarkMode ? Colors.white70 : Colors.grey,
+            ),
           ),
         ),
       ),

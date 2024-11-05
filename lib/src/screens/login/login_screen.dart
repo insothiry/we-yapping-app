@@ -76,9 +76,18 @@ class LoginScreenState extends State<LoginScreen> {
             BaseButton(
               text: 'Send OTP',
               onPressed: () {
-                Get.to(() => const OtpScreen());
+                final phoneNumber = _phoneController.text;
+                if (phoneNumber.isNotEmpty) {
+                  Get.to(() => OtpScreen(phoneNumber: phoneNumber));
+                } else {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                        content: Text('Please enter a phone number')),
+                  );
+                }
               },
             ),
+
             const SizedBox(height: 20),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
