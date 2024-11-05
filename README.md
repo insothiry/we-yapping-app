@@ -1,5 +1,9 @@
 # we_yapping_app
 
+Flutter version 3.13.6
+
+
+
 A new Flutter project.
 
 ## Getting Started
