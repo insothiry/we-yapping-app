@@ -5,7 +5,7 @@ import 'package:we_yapping_app/src/screens/bottom_navigation/bottom_navigation.d
 import 'package:we_yapping_app/src/services/http_service.dart';
 import 'dart:io';
 import 'package:we_yapping_app/src/widgets/base_button.dart';
-import 'package:we_yapping_app/src/utils/base_colors.dart'; // Import your base colors here
+import 'package:we_yapping_app/src/utils/base_colors.dart';
 
 class CreateAccountScreen extends StatefulWidget {
   final String phoneNumber;
@@ -105,16 +105,15 @@ class CreateAccountScreenState extends State<CreateAccountScreen> {
                 controller: _lastNameController,
                 decoration: InputDecoration(
                   hintText: 'Jeon',
-                  hintStyle: TextStyle(color: Colors.grey),
+                  hintStyle: const TextStyle(color: Colors.grey),
                   border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(20), // Increased radius
+                    borderRadius: BorderRadius.circular(20),
                     borderSide: const BorderSide(color: Colors.grey),
                   ),
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(20),
                     borderSide: const BorderSide(
-                        color: BaseColor.primaryColor,
-                        width: 2), // Base color on focus
+                        color: BaseColor.primaryColor, width: 2),
                   ),
                   filled: true,
                   fillColor: Colors.grey[100],
@@ -133,16 +132,15 @@ class CreateAccountScreenState extends State<CreateAccountScreen> {
                 controller: _usernameController,
                 decoration: InputDecoration(
                   hintText: 'Jungkook1997',
-                  hintStyle: TextStyle(color: Colors.grey),
+                  hintStyle: const TextStyle(color: Colors.grey),
                   border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(20), // Increased radius
+                    borderRadius: BorderRadius.circular(20),
                     borderSide: const BorderSide(color: Colors.grey),
                   ),
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(20),
                     borderSide: const BorderSide(
-                        color: BaseColor.primaryColor,
-                        width: 2), // Base color on focus
+                        color: BaseColor.primaryColor, width: 2),
                   ),
                   filled: true,
                   fillColor: Colors.grey[100],

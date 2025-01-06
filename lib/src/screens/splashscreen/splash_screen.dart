@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:we_yapping_app/src/screens/bottom_navigation/bottom_navigation.dart';
 import 'package:we_yapping_app/src/screens/onboarding/onboarding_screen.dart';
 import 'package:we_yapping_app/src/utils/base_colors.dart';
 
@@ -19,7 +20,8 @@ class _SplashScreenState extends State<SplashScreen> {
     Timer(const Duration(seconds: 3), () {
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => const OnboardingScreen()),
+        //  MaterialPageRoute(builder: (context) => const OnboardingScreen()),
+        MaterialPageRoute(builder: (context) => const BottomNavigation()),
       );
     });
   }
