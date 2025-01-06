@@ -12,7 +12,7 @@ Future<void> createUser(String firstName, String? lastName, File? profileImage,
   }
 
   final response = await http.post(
-    Uri.parse('http://localhost:3000/api/users/create'),
+    Uri.parse('http://localhost:3000/api/users/register'),
     headers: {'Content-Type': 'application/json'},
     body: jsonEncode({
       'firstName': firstName,
