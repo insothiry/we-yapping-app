@@ -39,27 +39,43 @@ class BottomNavigationState extends State<BottomNavigation> {
       ),
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed,
-        items: const <BottomNavigationBarItem>[
+        items: [
           BottomNavigationBarItem(
-            icon: Icon(Icons.people),
+            icon: _buildAnimatedIcon(Icons.people, 0),
             label: 'Contacts',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.chat_rounded),
+            icon: _buildAnimatedIcon(Icons.chat_rounded, 1),
             label: 'Chats',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.phone),
+            icon: _buildAnimatedIcon(Icons.phone, 2),
             label: 'Calls',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.settings),
+            icon: _buildAnimatedIcon(Icons.settings, 3),
             label: 'Settings',
           ),
         ],
         currentIndex: _selectedIndex,
         onTap: _onItemTapped,
         selectedItemColor: BaseColor.primaryColor,
+      ),
+    );
+  }
+
+  // Build animated icon with scaling effect
+  Widget _buildAnimatedIcon(IconData icon, int index) {
+    return AnimatedSwitcher(
+      duration: const Duration(milliseconds: 300),
+      transitionBuilder: (child, animation) {
+        return ScaleTransition(scale: animation, child: child);
+      },
+      child: Icon(
+        icon,
+        key: ValueKey<int>(_selectedIndex == index ? 1 : 0),
+        color: _selectedIndex == index ? BaseColor.primaryColor : Colors.grey,
+        size: _selectedIndex == index ? 24 : 20,
       ),
     );
   }

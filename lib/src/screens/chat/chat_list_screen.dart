@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:we_yapping_app/src/story_model/add_to_story.dart';
 import 'package:we_yapping_app/src/utils/base_colors.dart';
 import 'package:we_yapping_app/src/widgets/base_search_bar.dart';
 import 'package:we_yapping_app/src/widgets/story_profile.dart';
@@ -71,7 +72,10 @@ class ChatListScreen extends StatelessWidget {
               height: 24,
             ),
             onPressed: () {
-              // Action for the story icon button
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => AddToStoryPage()),
+              );
             },
           ),
           IconButton(
