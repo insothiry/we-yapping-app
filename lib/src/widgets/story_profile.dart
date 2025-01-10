@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:we_yapping_app/src/story_model/add_to_story.dart';
+import 'package:we_yapping_app/src/story_model/AddToStoryWithSelection.dart';
 import 'package:we_yapping_app/src/story_model/view_story_page.dart';
 import 'package:we_yapping_app/src/utils/base_colors.dart';
 import 'package:we_yapping_app/src/utils/story_state.dart';
@@ -18,25 +18,42 @@ class StoryProfile extends StatelessWidget {
     this.hasPostedStory = false, // Default to false
   }) : super(key: key);
 
-  // In story_profile.dart
-  // In story_profile.dart
   @override
   Widget build(BuildContext context) {
-    return ValueListenableBuilder<Map<String, String?>>(
+    return ValueListenableBuilder<Map<String, dynamic>>(
       valueListenable: StoryState.userStories,
       builder: (context, userStories, _) {
-        final storyPath = userStories[name]; // Get the story for this user
+        // Get the story paths for this user
+        final storyPath = userStories[name]; // This could be a dynamic type
+
+        // Convert dynamic type to List<String> safely
+        List<String> storyPaths = [];
+        if (storyPath != null) {
+          if (storyPath is List) {
+            storyPaths = storyPath
+                .map((e) => e.toString())
+                .toList(); // Safely convert to List<String>
+          } else {
+            storyPaths = [
+              storyPath.toString()
+            ]; // If it's a single value, put it in a list
+          }
+        }
 
         return Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             GestureDetector(
               onTap: () {
-                if (storyPath != null) {
+                if (storyPaths.isNotEmpty) {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => ViewStoryPage(storyPath: storyPath),
+                      builder: (context) => ViewStoryPage(
+                        storyPaths: storyPaths, // Pass the list of images
+                        userName: name, // Add user name
+                        userProfilePicture: avatar, // Pass avatar
+                      ),
                     ),
                   );
                 }
@@ -73,7 +90,8 @@ class StoryProfile extends StatelessWidget {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => AddToStoryPage(),
+                              builder: (context) =>
+                                  AddToStoryWithSelectionPage(),
                             ),
                           );
                         },
