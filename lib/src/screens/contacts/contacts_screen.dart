@@ -1,44 +1,251 @@
 import 'package:flutter/material.dart';
+import 'new_contacts_screen.dart';
 import 'package:we_yapping_app/src/utils/base_colors.dart';
+import 'dart:io';
+import 'dart:math';
 
-class ContactsScreen extends StatelessWidget {
+class ContactsScreen extends StatefulWidget {
   const ContactsScreen({super.key});
 
   @override
+  State<ContactsScreen> createState() => _ContactsScreenState();
+}
+class _ContactsScreenState extends State<ContactsScreen> {
+  final List<Map<String, dynamic>> _contacts = [
+    {
+      'name': 'Veiy Sokheng',
+      'phones': ['0979294797'],
+      'image': 'assets/images/avatar1.jpg',
+    },
+    {
+      'name': 'In Sothiry',
+      'phones': ['086605205'],
+      'image': 'assets/images/avatar2.jpg',
+    },
+    {
+      'name': 'Thoeun Pisethta',
+      'phones': ['012846888'],
+      'image': 'assets/images/avatar7.jpg',
+    },
+    {
+      'name': 'Mam Sovanratana',
+      'phones': ['012570906'],
+      'image': 'assets/images/avatar6.jpg',
+    },
+    {
+      'name': 'Pok Tepvignou',
+      'phones': ['012559886'],
+      'image': 'assets/images/avatar8.jpg',
+    },
+  ];
+
+  String _searchQuery = "";
+  bool _isAscending = true; // Track sort order
+
+  @override
+  void initState() {
+    super.initState();
+    _sortContacts(); // Sort contacts alphabetically by default when the screen loads
+  }
+
+  void _addContact(Map<String, dynamic> newContact) {
+    setState(() {
+      _contacts.add(newContact);
+    });
+  }
+
+  void _deleteContact(int index) {
+    setState(() {
+      _contacts.removeAt(index);
+    });
+  }
+
+  // Function to generate random colors
+  Color _generateRandomColor() {
+    Random random = Random();
+    return Color.fromRGBO(
+      random.nextInt(256),
+      random.nextInt(256),
+      random.nextInt(256),
+      1,
+    );
+  }
+
+  // Function to sort contacts
+  void _sortContacts() {
+    setState(() {
+      _contacts.sort((a, b) {
+        String nameA = a['name'].toString().toLowerCase();
+        String nameB = b['name'].toString().toLowerCase();
+        return _isAscending ? nameA.compareTo(nameB) : nameB.compareTo(nameA);
+      });
+      _isAscending = !_isAscending; // Toggle sort order after each sort
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final filteredContacts = _contacts.where((contact) {
+      final name = contact['name'] as String;
+      return name.toLowerCase().contains(_searchQuery.toLowerCase());
+    }).toList();
+
+    final Map<String, List<Map<String, dynamic>>> groupedContacts = {};
+    for (var contact in filteredContacts) {
+      String initial = (contact['name'] as String).substring(0, 1).toUpperCase();
+      groupedContacts.putIfAbsent(initial, () => []).add(contact);
+    }
+
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Contacts'),
-        leading: TextButton(
-          child: const Text(
-            'Sort',
-            style: TextStyle(color: BaseColor.primaryColor),
+        backgroundColor: BaseColor.primaryColor,
+        centerTitle: true,
+        title: const Text(
+          'Contacts',
+          style: TextStyle(
+            color: BaseColor.backgroundColor,
+            fontWeight: FontWeight.bold,
           ),
-          onPressed: () {},
+        ),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back, color: Colors.white),
+          onPressed: () {
+            Navigator.pop(context);
+          },
         ),
         actions: [
           IconButton(
-              onPressed: () {},
-              icon: const Icon(
-                Icons.add,
-                color: BaseColor.primaryColor,
-              ))
-        ],
-      ),
-      body: const Column(children: [
-        Padding(
-          padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-          child: SearchBar(
-            elevation: MaterialStatePropertyAll(1),
-            backgroundColor:
-                MaterialStatePropertyAll(BaseColor.backgroundColor),
-            hintText: 'Search',
-            leading: Icon(
-              Icons.search,
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const NewContactScreen(),
+                ),
+              ).then((newContact) {
+                if (newContact != null) {
+                  _addContact(newContact);
+                }
+              });
+            },
+            icon: const Icon(Icons.person_add, color: Colors.white),
+          ),
+          IconButton(
+            onPressed: _sortContacts,
+            icon: Icon(
+              _isAscending ? Icons.arrow_upward : Icons.arrow_downward,
+              color: Colors.white,
             ),
           ),
-        )
-      ]),
+        ],
+      ),
+      body: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: TextField(
+              decoration: InputDecoration(
+                hintText: 'Search...',
+                prefixIcon: const Icon(Icons.search),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(8.0),
+                ),
+              ),
+              onChanged: (value) {
+                setState(() {
+                  _searchQuery = value;
+                });
+              },
+            ),
+          ),
+          Expanded(
+            child: ListView(
+              children: [
+                ...groupedContacts.entries.map((entry) {
+                  final initial = entry.key;
+                  final contacts = entry.value;
+                  return Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 10,
+                          vertical: 5,
+                        ),
+                        child: Text(
+                          initial,
+                          style: const TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.grey,
+                          ),
+                        ),
+                      ),
+                      ...contacts.asMap().entries.map((entry) {
+                        final index = entry.key;
+                        final contact = entry.value;
+
+                        return Dismissible(
+                          key: ValueKey(contact['name']),
+                          direction: DismissDirection.endToStart,
+                          background: Container(
+                            color: Colors.red,
+                            alignment: Alignment.centerRight,
+                            padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                            child: const Icon(Icons.delete, color: Colors.white),
+                          ),
+                          onDismissed: (direction) {
+                            final contactIndex =
+                            _contacts.indexOf(contact); // Get actual index
+                            _deleteContact(contactIndex);
+                          },
+                          child: ListTile(
+                            leading: CircleAvatar(
+                              radius: 40,
+                              backgroundImage: contact['image'] != null
+                                  ? contact['image'].toString().startsWith('assets/')
+                                  ? AssetImage(contact['image']) as ImageProvider
+                                  : FileImage(File(contact['image']))
+                                  : null,
+                              backgroundColor: contact['image'] == null
+                                  ? _generateRandomColor() // Random background color for contacts without images
+                                  : null,
+                              child: contact['image'] == null
+                                  ? Text(
+                                (contact['name'] as String)[0],
+                                style: const TextStyle(color: Colors.white),
+                              )
+                                  : null,
+                            ),
+                            title: Text(contact['name']),
+                            subtitle: Text(
+                              (contact['phones'] != null && contact['phones'].isNotEmpty)
+                                  ? contact['phones'].join(', ')
+                                  : contact['status'] ?? "No status",
+                            ),
+                          ),
+                        );
+                      }).toList(),
+                    ],
+                  );
+                }).toList(),
+              ],
+            ),
+          ),
+        ],
+      ),
+      bottomNavigationBar: BottomNavigationBar(
+        backgroundColor: BaseColor.backgroundColor,
+        selectedItemColor: BaseColor.primaryColor,
+        unselectedItemColor: Colors.grey,
+        currentIndex: 2,
+        onTap: (index) {},
+        items: const [
+          BottomNavigationBarItem(icon: Icon(Icons.message), label: 'Messages'),
+          BottomNavigationBarItem(icon: Icon(Icons.call), label: 'Calls'),
+          BottomNavigationBarItem(icon: Icon(Icons.contacts), label: 'Contacts'),
+          BottomNavigationBarItem(icon: Icon(Icons.settings), label: 'Settings'),
+        ],
+      ),
     );
   }
 }
