@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart'; // For date formatting
+import 'package:intl/intl.dart';
+import 'search_screen.dart';
 
 class CallListScreen extends StatelessWidget {
   const CallListScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    // Example call logs with updated statuses
     final List<Map<String, dynamic>> callLogs = [
       {
         "name": "Team Align",
@@ -94,32 +94,23 @@ class CallListScreen extends StatelessWidget {
       }
     ];
 
-    // Helper function to group call logs by formatted date
     String formatDate(DateTime date) {
       final now = DateTime.now();
       final today = DateTime(now.year, now.month, now.day);
       final yesterday = today.subtract(const Duration(days: 1));
 
-      if (date.isAfter(today)) {
-        return "Today";
-      } else if (date.isAfter(yesterday)) {
-        return "Yesterday";
-      } else {
-        return DateFormat('EEEE, dd/MM/yyyy').format(date); // Day name + Date
-      }
+      if (date.isAfter(today)) return "Today";
+      if (date.isAfter(yesterday)) return "Yesterday";
+      return DateFormat('EEEE, dd/MM/yyyy').format(date);
     }
 
-    // Group call logs by date
     final Map<String, List<Map<String, dynamic>>> groupedCallLogs = {};
     for (var call in callLogs) {
-      // Parse the time string into a DateTime object
       final DateTime callTime = DateTime.parse(call["time"]);
-
       final dateKey = formatDate(callTime);
       groupedCallLogs.putIfAbsent(dateKey, () => []).add(call);
     }
 
-    // Sorted dates for display
     final sortedDateKeys = groupedCallLogs.keys.toList()
       ..sort((a, b) {
         if (a == "Today") return -1;
@@ -138,19 +129,29 @@ class CallListScreen extends StatelessWidget {
         backgroundColor: Colors.orange,
         elevation: 0,
         centerTitle: true,
-        toolbarHeight: 100, // Increases the height of the AppBar
+        toolbarHeight: 100,
         title: const Text(
           "Calls",
           style: TextStyle(color: Colors.white, fontSize: 20),
         ),
-        leading: const Padding(
-          padding: EdgeInsets.only(
+        leading: Padding(
+          padding: const EdgeInsets.only(
               left: 16.0,
               top: 12.0,
               bottom: 12.0), // Increases padding on the left side
           child: CircleAvatar(
             backgroundColor: Colors.black,
-            child: Icon(Icons.search, color: Colors.white),
+            child: IconButton(
+              icon: const Icon(Icons.search, color: Colors.white),
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => SearchScreen(callLogs: callLogs),
+                  ),
+                );
+              },
+            ),
           ),
         ),
         actions: const [
@@ -207,99 +208,97 @@ class CallListScreen extends StatelessWidget {
                         ),
                       ),
                       Column(
-                        children: List.generate(
-                          calls.length,
-                          (callIndex) {
-                            final call = calls[callIndex];
-                            final DateTime callTime =
-                                DateTime.parse(call["time"]);
+                        children: calls.map((call) {
+                          final callTime = DateTime.parse(call["time"]);
 
-                            return Column(
-                              children: [
-                                ListTile(
-                                  leading: CircleAvatar(
-                                    radius: 25,
-                                    backgroundColor: Colors.grey[300],
-                                    child: ClipOval(
-                                      child: Image.network(
-                                        call["imageUrl"],
-                                        fit: BoxFit.cover,
-                                        width: 50,
-                                        height: 50,
-                                        errorBuilder:
-                                            (context, error, stackTrace) {
-                                          return const Icon(
-                                            Icons.person,
-                                            size: 30,
-                                            color: Colors.grey,
-                                          );
-                                        },
-                                      ),
-                                    ),
-                                  ),
-                                  title: Text(
-                                    call["name"],
-                                    style: const TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 16,
-                                    ),
-                                  ),
-                                  subtitle: Row(
-                                    children: [
-                                      if (call["status"] == "missed")
-                                        const Icon(Icons.call_missed,
-                                            color: Colors.red, size: 16),
-                                      if (call["status"] == "declined")
-                                        const Icon(Icons.call_end,
-                                            color: Colors.red, size: 16),
-                                      if (call["status"] == "received")
-                                        const Icon(Icons.call_received,
-                                            color: Colors.green, size: 16),
-                                      if (call["status"] == "outgoing")
-                                        const Icon(Icons.call_made,
-                                            color: Colors.purple, size: 16),
-                                      const SizedBox(width: 5),
-                                      Text(
-                                        DateFormat('hh:mm a').format(callTime),
-                                        style: const TextStyle(
+                          return Column(
+                            children: [
+                              ListTile(
+                                leading: CircleAvatar(
+                                  radius: 25,
+                                  backgroundColor: Colors.grey[300],
+                                  child: ClipOval(
+                                    child: Image.network(
+                                      call["imageUrl"],
+                                      fit: BoxFit.cover,
+                                      width: 50,
+                                      height: 50,
+                                      errorBuilder:
+                                          (context, error, stackTrace) {
+                                        return const Icon(
+                                          Icons.person,
+                                          size: 30,
                                           color: Colors.grey,
-                                          fontSize: 14,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                  trailing: Row(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      IconButton(
-                                        onPressed: () {},
-                                        icon: const Icon(
-                                          Icons.phone,
-                                          color: Colors.green,
-                                        ),
-                                      ),
-                                      IconButton(
-                                        onPressed: () {},
-                                        icon: const Icon(
-                                          Icons.videocam,
-                                          color: Colors.blue,
-                                        ),
-                                      ),
-                                    ],
+                                        );
+                                      },
+                                    ),
                                   ),
                                 ),
-                                if (callIndex < calls.length - 1)
-                                  const Divider(
-                                    color: Colors.grey,
-                                    height: 1,
-                                    thickness: 0.5,
-                                    indent: 75,
-                                    endIndent: 20,
+                                title: Text(
+                                  call["name"],
+                                  style: const TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 16,
                                   ),
-                              ],
-                            );
-                          },
-                        ),
+                                ),
+                                subtitle: Row(
+                                  children: [
+                                    Icon(
+                                      call["status"] == "missed"
+                                          ? Icons.call_missed
+                                          : call["status"] == "declined"
+                                              ? Icons.call_end
+                                              : call["status"] == "received"
+                                                  ? Icons.call_received
+                                                  : Icons.call_made,
+                                      color: call["status"] == "missed" ||
+                                              call["status"] == "declined"
+                                          ? Colors.red
+                                          : call["status"] == "received"
+                                              ? Colors.green
+                                              : Colors.purple,
+                                      size: 16,
+                                    ),
+                                    const SizedBox(width: 5),
+                                    Text(
+                                      DateFormat('hh:mm a').format(callTime),
+                                      style: const TextStyle(
+                                        color: Colors.grey,
+                                        fontSize: 14,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                trailing: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    IconButton(
+                                      onPressed: () {},
+                                      icon: const Icon(
+                                        Icons.phone,
+                                        color: Colors.green,
+                                      ),
+                                    ),
+                                    IconButton(
+                                      onPressed: () {},
+                                      icon: const Icon(
+                                        Icons.videocam,
+                                        color: Colors.blue,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              const Divider(
+                                color: Colors.grey,
+                                height: 1,
+                                thickness: 0.5,
+                                indent: 75,
+                                endIndent: 20,
+                              ),
+                            ],
+                          );
+                        }).toList(),
                       ),
                     ],
                   );
