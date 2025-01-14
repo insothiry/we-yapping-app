@@ -10,6 +10,7 @@ class ContactsScreen extends StatefulWidget {
   @override
   State<ContactsScreen> createState() => _ContactsScreenState();
 }
+
 class _ContactsScreenState extends State<ContactsScreen> {
   final List<Map<String, dynamic>> _contacts = [
     {
@@ -40,12 +41,12 @@ class _ContactsScreenState extends State<ContactsScreen> {
   ];
 
   String _searchQuery = "";
-  bool _isAscending = true; // Track sort order
+  bool _isAscending = true;
 
   @override
   void initState() {
     super.initState();
-    _sortContacts(); // Sort contacts alphabetically by default when the screen loads
+    _sortContacts();
   }
 
   void _addContact(Map<String, dynamic> newContact) {
@@ -60,18 +61,16 @@ class _ContactsScreenState extends State<ContactsScreen> {
     });
   }
 
-  // Function to generate random colors
+  final _random = Random();
   Color _generateRandomColor() {
-    Random random = Random();
-    return Color.fromRGBO(
-      random.nextInt(256),
-      random.nextInt(256),
-      random.nextInt(256),
-      1,
+    return Color.fromARGB(
+      255,
+      _random.nextInt(256),
+      _random.nextInt(256),
+      _random.nextInt(256),
     );
   }
 
-  // Function to sort contacts
   void _sortContacts() {
     setState(() {
       _contacts.sort((a, b) {
@@ -79,7 +78,7 @@ class _ContactsScreenState extends State<ContactsScreen> {
         String nameB = b['name'].toString().toLowerCase();
         return _isAscending ? nameA.compareTo(nameB) : nameB.compareTo(nameA);
       });
-      _isAscending = !_isAscending; // Toggle sort order after each sort
+      _isAscending = !_isAscending;
     });
   }
 
@@ -87,7 +86,9 @@ class _ContactsScreenState extends State<ContactsScreen> {
   Widget build(BuildContext context) {
     final filteredContacts = _contacts.where((contact) {
       final name = contact['name'] as String;
-      return name.toLowerCase().contains(_searchQuery.toLowerCase());
+      final phones = (contact['phones'] as List).join(', '); // Combine phone numbers into a string
+      final searchTarget = name.toLowerCase() + phones.toLowerCase();
+      return searchTarget.contains(_searchQuery.toLowerCase());
     }).toList();
 
     final Map<String, List<Map<String, dynamic>>> groupedContacts = {};
@@ -147,7 +148,7 @@ class _ContactsScreenState extends State<ContactsScreen> {
                 hintText: 'Search...',
                 prefixIcon: const Icon(Icons.search),
                 border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(8.0),
+                  borderRadius: BorderRadius.circular(30),
                 ),
               ),
               onChanged: (value) {
@@ -195,7 +196,7 @@ class _ContactsScreenState extends State<ContactsScreen> {
                           ),
                           onDismissed: (direction) {
                             final contactIndex =
-                            _contacts.indexOf(contact); // Get actual index
+                            _contacts.indexOf(contact);
                             _deleteContact(contactIndex);
                           },
                           child: ListTile(
@@ -207,7 +208,7 @@ class _ContactsScreenState extends State<ContactsScreen> {
                                   : FileImage(File(contact['image']))
                                   : null,
                               backgroundColor: contact['image'] == null
-                                  ? _generateRandomColor() // Random background color for contacts without images
+                                  ? _generateRandomColor()
                                   : null,
                               child: contact['image'] == null
                                   ? Text(
@@ -231,19 +232,6 @@ class _ContactsScreenState extends State<ContactsScreen> {
               ],
             ),
           ),
-        ],
-      ),
-      bottomNavigationBar: BottomNavigationBar(
-        backgroundColor: BaseColor.backgroundColor,
-        selectedItemColor: BaseColor.primaryColor,
-        unselectedItemColor: Colors.grey,
-        currentIndex: 2,
-        onTap: (index) {},
-        items: const [
-          BottomNavigationBarItem(icon: Icon(Icons.message), label: 'Messages'),
-          BottomNavigationBarItem(icon: Icon(Icons.call), label: 'Calls'),
-          BottomNavigationBarItem(icon: Icon(Icons.contacts), label: 'Contacts'),
-          BottomNavigationBarItem(icon: Icon(Icons.settings), label: 'Settings'),
         ],
       ),
     );

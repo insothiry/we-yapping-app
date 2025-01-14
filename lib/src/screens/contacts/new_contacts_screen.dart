@@ -13,7 +13,6 @@ class NewContactScreen extends StatefulWidget {
 class _NewContactScreenState extends State<NewContactScreen> {
   final TextEditingController _firstNameController = TextEditingController();
   final TextEditingController _lastNameController = TextEditingController();
-
   final List<TextEditingController> _phoneControllers = [TextEditingController()];
   File? _selectedImage;
   final ImagePicker _picker = ImagePicker();
@@ -21,18 +20,6 @@ class _NewContactScreenState extends State<NewContactScreen> {
   void _addPhoneField() {
     setState(() {
       _phoneControllers.add(TextEditingController());
-    });
-  }
-
-  void _removePhoneField(int index) {
-    setState(() {
-      if (_phoneControllers.length > 1) {
-        _phoneControllers.removeAt(index);
-      } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('At least one phone number is required')),
-        );
-      }
     });
   }
 
@@ -89,6 +76,17 @@ class _NewContactScreenState extends State<NewContactScreen> {
   }
 
   @override
+  void dispose() {
+    // Dispose all controllers to prevent memory leaks
+    _firstNameController.dispose();
+    _lastNameController.dispose();
+    for (var controller in _phoneControllers) {
+      controller.dispose();
+    }
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -129,82 +127,93 @@ class _NewContactScreenState extends State<NewContactScreen> {
           ],
         ),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          children: [
-            Center(
-              child: GestureDetector(
-                onTap: _selectImage,
-                child: CircleAvatar(
-                  radius: 40,
-                  backgroundColor: Colors.grey[300],
-                  backgroundImage: _selectedImage != null ? FileImage(_selectedImage!) : null,
-                  child: _selectedImage == null
-                      ? const Icon(
-                    Icons.add_a_photo,
-                    color: Colors.white,
-                  )
-                      : null,
+      body: SafeArea(
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              children: [
+                Center(
+                  child: GestureDetector(
+                    onTap: _selectImage,
+                    child: CircleAvatar(
+                      radius: 40,
+                      backgroundColor: Colors.grey[300],
+                      backgroundImage: _selectedImage != null ? FileImage(_selectedImage!) : null,
+                      child: _selectedImage == null
+                          ? const Icon(
+                        Icons.add_a_photo,
+                        color: Colors.white,
+                      )
+                          : null,
+                    ),
+                  ),
                 ),
-              ),
-            ),
-            const SizedBox(height: 8.0),
-            const Text(
-              'Add Photo',
-              style: TextStyle(color: BaseColor.secondaryColor),
-            ),
-            const SizedBox(height: 16.0),
-            TextField(
-              controller: _firstNameController,
-              decoration: const InputDecoration(labelText: 'First Name'),
-            ),
-            TextField(
-              controller: _lastNameController,
-              decoration: const InputDecoration(labelText: 'Last Name'),
-            ),
-            const SizedBox(height: 16.0),
-            Expanded(
-              child: ListView.builder(
-                itemCount: _phoneControllers.length,
-                itemBuilder: (context, index) {
-                  return Dismissible(
-                    key: Key('phone_field_$index'),
-                    direction: DismissDirection.endToStart,
-                    background: Container(
-                      color: Colors.red,
-                      alignment: Alignment.centerRight,
-                      padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                      child: const Icon(Icons.delete, color: Colors.white),
-                    ),
-                    onDismissed: (direction) {
-                      _removePhoneField(index);
-                    },
-                    child: Row(
-                      children: [
-                        Expanded(
-                          child: TextField(
-                            controller: _phoneControllers[index],
-                            decoration: const InputDecoration(
-                              labelText: 'Phone',
-                              prefixIcon: Icon(Icons.phone),
+                const SizedBox(height: 8.0),
+                const Text(
+                  'Add Photo',
+                  style: TextStyle(color: BaseColor.secondaryColor),
+                ),
+                const SizedBox(height: 16.0),
+                TextField(
+                  controller: _firstNameController,
+                  decoration: const InputDecoration(labelText: 'First Name'),
+                ),
+                TextField(
+                  controller: _lastNameController,
+                  decoration: const InputDecoration(labelText: 'Last Name'),
+                ),
+                const SizedBox(height: 16.0),
+                ListView.builder(
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  itemCount: _phoneControllers.length,
+                  itemBuilder: (context, index) {
+                    return Dismissible(
+                      key: Key('phone_field_$index'),
+                      direction: DismissDirection.endToStart,
+                      background: Container(
+                        color: Colors.red,
+                        alignment: Alignment.centerRight,
+                        padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                        child: const Icon(Icons.delete, color: Colors.white),
+                      ),
+                      onDismissed: (direction) {
+                        final removedController = _phoneControllers.removeAt(index);
+                        setState(() {
+                          // Update UI immediately
+                        });
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(content: Text('Phone field removed')),
+                        );
+                        removedController.dispose(); // Prevent memory leaks
+                      },
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: TextField(
+                              controller: _phoneControllers[index],
+                              decoration: const InputDecoration(
+                                labelText: 'Phone',
+                                prefixIcon: Icon(Icons.phone),
+                              ),
+                              keyboardType: TextInputType.phone,
                             ),
-                            keyboardType: TextInputType.phone,
                           ),
-                        ),
-                      ],
-                    ),
-                  );
-                },
-              ),
+                        ],
+                      ),
+                    );
+                  },
+                ),
+                const SizedBox(height: 16.0),
+                TextButton.icon(
+                  onPressed: _addPhoneField,
+                  icon: const Icon(Icons.add, color: BaseColor.primaryColor),
+                  label: const Text('Add Phone', style: TextStyle(color: BaseColor.primaryColor)),
+                ),
+              ],
             ),
-            const SizedBox(height: 16.0),
-            TextButton.icon(
-              onPressed: _addPhoneField,
-              icon: const Icon(Icons.add, color: BaseColor.backgroundColor),
-              label: const Text('Add Phone', style: TextStyle(color: BaseColor.backgroundColor)),
-            ),
-          ],
+          ),
         ),
       ),
     );
