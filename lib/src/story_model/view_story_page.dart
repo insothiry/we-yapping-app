@@ -59,7 +59,7 @@ class _ViewStoryPageState extends State<ViewStoryPage>
       });
       _pageController.animateToPage(
         currentIndex,
-        duration: Duration(milliseconds: 300),
+        duration: const Duration(milliseconds: 300),
         curve: Curves.easeInOut,
       );
       _startProgressBar(); // Start the animation for the next image
@@ -77,7 +77,7 @@ class _ViewStoryPageState extends State<ViewStoryPage>
       });
       _pageController.animateToPage(
         currentIndex,
-        duration: Duration(milliseconds: 300),
+        duration: const Duration(milliseconds: 300),
         curve: Curves.easeInOut,
       );
       _startProgressBar(); // Restart progress bar animation for the previous image
@@ -99,7 +99,7 @@ class _ViewStoryPageState extends State<ViewStoryPage>
         backgroundColor: Colors.black,
         elevation: 0,
         leading: IconButton(
-          icon: Icon(Icons.close, color: Colors.orange),
+          icon: const Icon(Icons.close, color: Colors.orange),
           onPressed: () {
             Navigator.pop(context);
           },
@@ -111,11 +111,11 @@ class _ViewStoryPageState extends State<ViewStoryPage>
               backgroundImage: AssetImage(widget.userProfilePicture),
               radius: 20,
             ),
-            SizedBox(width: 8),
+            const SizedBox(width: 8),
             // User Name
             Text(
               widget.userName,
-              style: TextStyle(color: Colors.white),
+              style: const TextStyle(color: Colors.white),
             ),
           ],
         ),
@@ -136,7 +136,8 @@ class _ViewStoryPageState extends State<ViewStoryPage>
             PageView.builder(
               itemCount: widget.storyPaths.length,
               controller: _pageController,
-              physics: NeverScrollableScrollPhysics(), // Prevent manual swiping
+              physics:
+                  const NeverScrollableScrollPhysics(), // Prevent manual swiping
               itemBuilder: (context, index) {
                 return Padding(
                   padding: const EdgeInsets.only(
@@ -173,8 +174,8 @@ class _ViewStoryPageState extends State<ViewStoryPage>
                                 ? _progressBarController.value
                                 : (currentIndex > index ? 1.0 : 0.0),
                             backgroundColor: Colors.white.withOpacity(0.5),
-                            valueColor:
-                                AlwaysStoppedAnimation<Color>(Colors.orange),
+                            valueColor: const AlwaysStoppedAnimation<Color>(
+                                Colors.orange),
                           );
                         },
                       ),
@@ -185,7 +186,7 @@ class _ViewStoryPageState extends State<ViewStoryPage>
             ),
 
             // Viewer and like counts at the bottom
-            Positioned(
+            const Positioned(
               bottom: 40, // Position viewer and like counts near the bottom
               left: 16,
               right: 16,
@@ -200,7 +201,7 @@ class _ViewStoryPageState extends State<ViewStoryPage>
                         color: Colors.white,
                         size: 24,
                       ),
-                      const SizedBox(width: 8),
+                      SizedBox(width: 8),
                       Text(
                         '0 viewers', // Update with actual viewer count
                         style: TextStyle(color: Colors.white, fontSize: 16),
@@ -216,7 +217,7 @@ class _ViewStoryPageState extends State<ViewStoryPage>
                         color: Colors.orange,
                         size: 24,
                       ),
-                      const SizedBox(width: 8),
+                      SizedBox(width: 8),
                       Text(
                         '0 likes', // Update with actual like count
                         style: TextStyle(color: Colors.white, fontSize: 16),

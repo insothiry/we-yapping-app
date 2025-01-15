@@ -15,10 +15,6 @@ class _AddToStoryWithSelectionPageState
     'assets/images/avatar3.jpg',
     'assets/images/avatar4.jpg',
     'assets/images/avatar5.jpg',
-    'assets/images/image6.jpg',
-    'assets/images/image7.jpg',
-    'assets/images/image8.jpg',
-    'assets/images/image9.jpg',
   ];
 
   final Set<String> selectedImages = Set<String>();
