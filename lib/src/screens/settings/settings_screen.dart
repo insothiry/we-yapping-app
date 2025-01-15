@@ -25,7 +25,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
   @override
   Widget build(BuildContext context) {
     final textColor =
-        Theme.of(context).textTheme.bodyText1?.color ?? Colors.black;
+        Theme.of(context).textTheme.bodyLarge?.color ?? Colors.black;
 
     return Scaffold(
       appBar: AppBar(

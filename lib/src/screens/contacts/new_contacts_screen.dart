@@ -11,18 +11,23 @@ class NewContactScreen extends StatefulWidget {
 }
 
 class _NewContactScreenState extends State<NewContactScreen> {
+  // Controllers for the first name, last name, and phone numbers
   final TextEditingController _firstNameController = TextEditingController();
   final TextEditingController _lastNameController = TextEditingController();
   final List<TextEditingController> _phoneControllers = [TextEditingController()];
+
+  // Variables for handling image selection
   File? _selectedImage;
   final ImagePicker _picker = ImagePicker();
 
+  // Adds a new phone field
   void _addPhoneField() {
     setState(() {
       _phoneControllers.add(TextEditingController());
     });
   }
 
+  // Handles image selection from the gallery
   Future<void> _selectImage() async {
     try {
       final XFile? pickedFile = await _picker.pickImage(source: ImageSource.gallery);
@@ -38,6 +43,7 @@ class _NewContactScreenState extends State<NewContactScreen> {
     }
   }
 
+  // Creates a new contact and navigates back with the contact data
   void _createContact() {
     if (_firstNameController.text.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -46,6 +52,7 @@ class _NewContactScreenState extends State<NewContactScreen> {
       return;
     }
 
+    // Gather phone numbers from controllers
     final phoneNumbers = _phoneControllers
         .map((controller) => controller.text.trim())
         .where((phone) => phone.isNotEmpty)
@@ -96,6 +103,7 @@ class _NewContactScreenState extends State<NewContactScreen> {
         title: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
+            // Cancel button
             TextButton(
               onPressed: () => Navigator.pop(context),
               child: const Text(
@@ -106,6 +114,7 @@ class _NewContactScreenState extends State<NewContactScreen> {
                 ),
               ),
             ),
+            // Title
             const Text(
               'New Contact',
               style: TextStyle(
@@ -114,6 +123,7 @@ class _NewContactScreenState extends State<NewContactScreen> {
                 color: Colors.white,
               ),
             ),
+            // Save button
             TextButton(
               onPressed: _createContact,
               child: const Text(
@@ -133,6 +143,7 @@ class _NewContactScreenState extends State<NewContactScreen> {
             padding: const EdgeInsets.all(16.0),
             child: Column(
               children: [
+                // Image selection widget
                 Center(
                   child: GestureDetector(
                     onTap: _selectImage,
@@ -155,6 +166,8 @@ class _NewContactScreenState extends State<NewContactScreen> {
                   style: TextStyle(color: BaseColor.secondaryColor),
                 ),
                 const SizedBox(height: 16.0),
+
+                // Input fields for first and last name
                 TextField(
                   controller: _firstNameController,
                   decoration: const InputDecoration(labelText: 'First Name'),
@@ -164,6 +177,8 @@ class _NewContactScreenState extends State<NewContactScreen> {
                   decoration: const InputDecoration(labelText: 'Last Name'),
                 ),
                 const SizedBox(height: 16.0),
+
+                // Phone number fields with a dismissible feature
                 ListView.builder(
                   shrinkWrap: true,
                   physics: const NeverScrollableScrollPhysics(),
@@ -206,6 +221,8 @@ class _NewContactScreenState extends State<NewContactScreen> {
                   },
                 ),
                 const SizedBox(height: 16.0),
+
+                // Add phone button
                 TextButton.icon(
                   onPressed: _addPhoneField,
                   icon: const Icon(Icons.add, color: BaseColor.primaryColor),

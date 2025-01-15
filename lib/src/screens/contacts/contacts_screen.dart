@@ -1,9 +1,15 @@
+// Importing the Flutter Material package for UI components
 import 'package:flutter/material.dart';
-import 'new_contacts_screen.dart';
-import 'package:we_yapping_app/src/utils/base_colors.dart';
-import 'dart:io';
-import 'dart:math';
 
+// Importing additional screens and utilities
+import 'new_contacts_screen.dart'; // Custom screen for adding new contacts
+import 'package:we_yapping_app/src/utils/base_colors.dart'; // Base colors for consistent styling
+
+// Importing Dart packages for file handling and generating random values
+import 'dart:io'; // For handling file paths and file-based images
+import 'dart:math'; // For generating random colors
+
+// Main Contacts screen widget
 class ContactsScreen extends StatefulWidget {
   const ContactsScreen({super.key});
 
@@ -11,7 +17,9 @@ class ContactsScreen extends StatefulWidget {
   State<ContactsScreen> createState() => _ContactsScreenState();
 }
 
+// State for the ContactsScreen widget
 class _ContactsScreenState extends State<ContactsScreen> {
+  // List of predefined contacts
   final List<Map<String, dynamic>> _contacts = [
     {
       'name': 'Veiy Sokheng',
@@ -23,44 +31,35 @@ class _ContactsScreenState extends State<ContactsScreen> {
       'phones': ['086605205'],
       'image': 'assets/images/avatar2.jpg',
     },
-    {
-      'name': 'Thoeun Pisethta',
-      'phones': ['012846888'],
-      'image': 'assets/images/avatar7.jpg',
-    },
-    {
-      'name': 'Mam Sovanratana',
-      'phones': ['012570906'],
-      'image': 'assets/images/avatar6.jpg',
-    },
-    {
-      'name': 'Pok Tepvignou',
-      'phones': ['012559886'],
-      'image': 'assets/images/avatar8.jpg',
-    },
+    // More predefined contacts...
   ];
 
-  String _searchQuery = "";
-  bool _isAscending = true;
+  // Variables for search and sorting
+  String _searchQuery = ""; // Tracks the search input from the user
+  bool _isAscending = true; // Determines sorting order
 
+  // Initialize state and sort contacts by default
   @override
   void initState() {
     super.initState();
     _sortContacts();
   }
 
+  // Adds a new contact to the list
   void _addContact(Map<String, dynamic> newContact) {
     setState(() {
       _contacts.add(newContact);
     });
   }
 
+  // Deletes a contact from the list by index
   void _deleteContact(int index) {
     setState(() {
       _contacts.removeAt(index);
     });
   }
 
+  // Generates a random color for contact avatars without an image
   final _random = Random();
   Color _generateRandomColor() {
     return Color.fromARGB(
@@ -71,6 +70,7 @@ class _ContactsScreenState extends State<ContactsScreen> {
     );
   }
 
+  // Sorts the contacts list alphabetically
   void _sortContacts() {
     setState(() {
       _contacts.sort((a, b) {
@@ -84,37 +84,41 @@ class _ContactsScreenState extends State<ContactsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    // Filters contacts based on search query
     final filteredContacts = _contacts.where((contact) {
       final name = contact['name'] as String;
-      final phones = (contact['phones'] as List).join(', '); // Combine phone numbers into a string
+      final phones = (contact['phones'] as List).join(', ');
       final searchTarget = name.toLowerCase() + phones.toLowerCase();
       return searchTarget.contains(_searchQuery.toLowerCase());
     }).toList();
 
+    // Groups contacts by the first letter of their names
     final Map<String, List<Map<String, dynamic>>> groupedContacts = {};
     for (var contact in filteredContacts) {
       String initial = (contact['name'] as String).substring(0, 1).toUpperCase();
       groupedContacts.putIfAbsent(initial, () => []).add(contact);
     }
 
+    // UI for the ContactsScreen
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: BaseColor.primaryColor,
+        backgroundColor: BaseColor.primaryColor, // Custom primary color
         centerTitle: true,
         title: const Text(
           'Contacts',
           style: TextStyle(
-            color: BaseColor.backgroundColor,
+            color: BaseColor.backgroundColor, // Custom background color
             fontWeight: FontWeight.bold,
           ),
         ),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: Colors.white),
           onPressed: () {
-            Navigator.pop(context);
+            Navigator.pop(context); // Navigates back to the previous screen
           },
         ),
         actions: [
+          // Add new contact button
           IconButton(
             onPressed: () {
               Navigator.push(
@@ -130,6 +134,7 @@ class _ContactsScreenState extends State<ContactsScreen> {
             },
             icon: const Icon(Icons.person_add, color: Colors.white),
           ),
+          // Sort contacts button
           IconButton(
             onPressed: _sortContacts,
             icon: Icon(
@@ -141,6 +146,7 @@ class _ContactsScreenState extends State<ContactsScreen> {
       ),
       body: Column(
         children: [
+          // Search bar
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: TextField(
@@ -158,6 +164,7 @@ class _ContactsScreenState extends State<ContactsScreen> {
               },
             ),
           ),
+          // Contacts list
           Expanded(
             child: ListView(
               children: [
@@ -167,6 +174,7 @@ class _ContactsScreenState extends State<ContactsScreen> {
                   return Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
+                      // Group header (initial)
                       Padding(
                         padding: const EdgeInsets.symmetric(
                           horizontal: 10,
@@ -181,6 +189,7 @@ class _ContactsScreenState extends State<ContactsScreen> {
                           ),
                         ),
                       ),
+                      // List of contacts under the group
                       ...contacts.asMap().entries.map((entry) {
                         final index = entry.key;
                         final contact = entry.value;
@@ -195,9 +204,8 @@ class _ContactsScreenState extends State<ContactsScreen> {
                             child: const Icon(Icons.delete, color: Colors.white),
                           ),
                           onDismissed: (direction) {
-                            final contactIndex =
-                            _contacts.indexOf(contact);
-                            _deleteContact(contactIndex);
+                            final contactIndex = _contacts.indexOf(contact);
+                            _deleteContact(contactIndex); // Deletes the contact
                           },
                           child: ListTile(
                             leading: CircleAvatar(

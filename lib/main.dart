@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:we_yapping_app/src/screens/contacts/contacts_screen.dart';
+import 'package:we_yapping_app/src/screens/contacts/new_contacts_screen.dart';
 import 'package:we_yapping_app/src/screens/splashscreen/splash_screen.dart';
 import 'package:we_yapping_app/src/services/socket_service.dart';
 import 'package:we_yapping_app/src/utils/base_colors.dart';
@@ -47,7 +49,7 @@ class MyApp extends StatelessWidget {
         dividerColor: Colors.white, // Divider color for dark theme
       ),
       themeMode: ThemeMode.system,
-      home: const SplashScreen(),
+      home: const ContactsScreen(),
     );
   }
 }
