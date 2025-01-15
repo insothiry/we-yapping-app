@@ -1,11 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:we_yapping_app/src/screens/splashscreen/splash_screen.dart';
 import 'package:we_yapping_app/src/services/socket_service.dart';
 import 'package:we_yapping_app/src/utils/base_colors.dart';
 
-void main() {
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  try {
+    await Supabase.initialize(
+      url: 'https://fscjilkdmrvexbvtmtud.supabase.co',
+      anonKey:
+          'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZzY2ppbGtkbXJ2ZXhidnRtdHVkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzY3MzU5NTcsImV4cCI6MjA1MjMxMTk1N30.h8S0uFxHFltpqsDgi7pCKVq1GS96BJhPQhC7a-DCvHc',
+    );
+    print('Supabase initialized successfully');
+  } catch (e) {
+    print('Error initializing Supabase: $e');
+  }
+
   final socketService = SocketService();
   socketService.connect();
 
@@ -26,11 +38,10 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
         dividerColor: Colors.black12,
       ),
-      darkTheme: ThemeData.dark().copyWith(
-        textTheme: Typography().white.apply(fontFamily: 'Work_Sans'),
+      darkTheme: ThemeData(
+        fontFamily: 'Work_Sans',
         appBarTheme: const AppBarTheme(
-          backgroundColor: Colors.black38,
-          foregroundColor: Colors.white,
+          backgroundColor: Colors.black45,
         ),
         colorScheme: const ColorScheme.dark(
           primary: Colors.blueGrey, // Primary color for dark theme

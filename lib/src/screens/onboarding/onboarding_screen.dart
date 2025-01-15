@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
+import 'package:we_yapping_app/src/screens/login/login_screen.dart';
 import 'package:we_yapping_app/src/screens/signup/signup_screen.dart';
 import 'package:we_yapping_app/src/utils/base_colors.dart';
 import 'package:we_yapping_app/src/widgets/base_button.dart';
@@ -162,7 +163,7 @@ class OnboardingScreenState extends State<OnboardingScreen>
                       ),
                       TextButton(
                         onPressed: () {
-                          Get.off(() => const SignUpScreen());
+                          Get.off(() => const LoginScreen());
                         },
                         child: const Text(
                           "Login here",

@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "637617021437",
+    "project_id": "maff-app-9573b",
+    "storage_bucket": "maff-app-9573b.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:637617021437:android:28a5578fbf2f58e3017994",
+        "android_client_info": {
+          "package_name": "com.example.maff_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBJVO61faq6T-PGXzLv_eoVqfzg_CsDJNI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
