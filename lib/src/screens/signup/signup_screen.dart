@@ -17,10 +17,15 @@ class SignUpScreenState extends State<SignUpScreen> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   FocusNode focusNode = FocusNode();
   String? _phoneNumber;
+  String? _phoneNumber0;
 
   void _sentOtp() {
     if (_formKey.currentState!.validate()) {
-      Get.to(() => OtpScreen(phoneNumber: _phoneNumber!));
+      // Remove leading 0 before pushing to OTP screen
+      String phoneNumberToSend = _phoneNumber!.startsWith('0')
+          ? _phoneNumber!.substring(1) // Remove the '0' if present
+          : _phoneNumber!;
+      Get.to(() => OtpScreen(phoneNumber: phoneNumberToSend));
     }
   }
 
@@ -72,6 +77,7 @@ class SignUpScreenState extends State<SignUpScreen> {
                     languageCode: "kh",
                     onChanged: (phone) {
                       _phoneNumber = phone.completeNumber;
+                      print(_phoneNumber);
                     },
                   ),
                   const SizedBox(height: 10),

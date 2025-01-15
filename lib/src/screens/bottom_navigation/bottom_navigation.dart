@@ -6,7 +6,9 @@ import 'package:we_yapping_app/src/screens/settings/settings_screen.dart';
 import 'package:we_yapping_app/src/utils/base_colors.dart';
 
 class BottomNavigation extends StatefulWidget {
-  const BottomNavigation({Key? key}) : super(key: key);
+  final String userId;
+
+  const BottomNavigation({Key? key, required this.userId}) : super(key: key);
 
   @override
   BottomNavigationState createState() => BottomNavigationState();
@@ -16,12 +18,16 @@ class BottomNavigationState extends State<BottomNavigation> {
   int _selectedIndex = 0;
 
   // List of widgets to display in each tab
-  final List<Widget> _widgetOptions = <Widget>[
-    const ContactsScreen(),
-    ChatListScreen(),
-    CallListScreen(),
-    SettingsScreen(),
-  ];
+  List<Widget> _widgetOptions() {
+    return <Widget>[
+      ContactsScreen(userId: widget.userId),
+      ChatListScreen(
+        userId: widget.userId,
+      ),
+      CallListScreen(),
+      SettingsScreen(userId: widget.userId),
+    ];
+  }
 
   // Function to handle tab selection
   void _onItemTapped(int index) {
@@ -35,7 +41,7 @@ class BottomNavigationState extends State<BottomNavigation> {
     return Scaffold(
       body: IndexedStack(
         index: _selectedIndex,
-        children: _widgetOptions,
+        children: _widgetOptions(),
       ),
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed,

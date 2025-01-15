@@ -1,11 +1,15 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:we_yapping_app/src/screens/bottom_navigation/bottom_navigation.dart';
-import 'package:we_yapping_app/src/services/http_service.dart';
 import 'dart:io';
 import 'package:we_yapping_app/src/widgets/base_button.dart';
 import 'package:we_yapping_app/src/utils/base_colors.dart';
+import 'package:http/http.dart' as http;
 
 class CreateAccountScreen extends StatefulWidget {
   final String phoneNumber;
@@ -35,6 +39,67 @@ class CreateAccountScreenState extends State<CreateAccountScreen> {
     }
   }
 
+  Future<void> createUser(String firstName, String? lastName,
+      File? profileImage, String username, String phoneNumber) async {
+    String? imageUrl;
+
+    if (profileImage != null) {
+      try {
+        // Upload the image to Supabase Storage
+        final fileName =
+            'profile_images/${DateTime.now().millisecondsSinceEpoch}.jpg';
+        final storageResponse = await Supabase.instance.client.storage
+            .from('we-yapping-images')
+            .upload(fileName, profileImage);
+
+        // Get the public URL of the uploaded image
+        final publicUrl = Supabase.instance.client.storage
+            .from('we-yapping-images')
+            .getPublicUrl(fileName);
+        imageUrl = publicUrl;
+      } catch (error) {
+        // Handle upload failure
+        Get.snackbar('Error', 'An error occurred while uploading image: $error',
+            snackPosition: SnackPosition.BOTTOM);
+        print(error);
+        return;
+      }
+    }
+
+    try {
+      final response = await http.post(
+        Uri.parse('http://localhost:3000/api/users/register'),
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({
+          'firstName': firstName,
+          'lastName': lastName,
+          'profileImage': imageUrl, // Store the image URL here
+          'username': username,
+          'phoneNumber': phoneNumber,
+        }),
+      );
+
+      if (response.statusCode == 201) {
+        final responseBody = jsonDecode(response.body);
+        final String userId = responseBody['data']['userId'];
+        print("User ID: $userId");
+
+        // Save userId to SharedPreferences
+        SharedPreferences prefs = await SharedPreferences.getInstance();
+        prefs.setString('userId', userId);
+
+        // Navigate to BottomNavigation
+        Get.offAll(() => BottomNavigation(userId: userId));
+      } else {
+        Get.snackbar('Error', 'Failed to create account: ${response.body}',
+            snackPosition: SnackPosition.BOTTOM);
+      }
+    } catch (error) {
+      Get.snackbar('Error', 'An error occurred: $error',
+          snackPosition: SnackPosition.BOTTOM);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -51,13 +116,18 @@ class CreateAccountScreenState extends State<CreateAccountScreen> {
               GestureDetector(
                 onTap: _pickImage,
                 child: CircleAvatar(
-                  backgroundColor: BaseColor.primaryColor.withOpacity(0.2),
+                  backgroundColor: Colors.white,
                   radius: 50,
-                  backgroundImage:
-                      _profileImage != null ? FileImage(_profileImage!) : null,
-                  child: _profileImage == null
-                      ? const Icon(Icons.add_a_photo, size: 30)
-                      : null,
+                  child: ClipOval(
+                    child: _profileImage != null
+                        ? Image.file(
+                            _profileImage!,
+                            width: 100,
+                            height: 100,
+                            fit: BoxFit.cover,
+                          )
+                        : const Icon(Icons.add_a_photo, size: 30),
+                  ),
                 ),
               ),
               const SizedBox(height: 20),
@@ -71,7 +141,7 @@ class CreateAccountScreenState extends State<CreateAccountScreen> {
                 controller: _firstNameController,
                 decoration: InputDecoration(
                   hintText: 'Jungkook',
-                  hintStyle: TextStyle(color: Colors.grey),
+                  hintStyle: const TextStyle(color: Colors.grey),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(20),
                     borderSide: const BorderSide(color: Colors.grey),
@@ -79,8 +149,7 @@ class CreateAccountScreenState extends State<CreateAccountScreen> {
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(20),
                     borderSide: const BorderSide(
-                        color: BaseColor.primaryColor,
-                        width: 2), // Base color on focus
+                        color: BaseColor.primaryColor, width: 2),
                   ),
                   filled: true,
                   fillColor: Colors.grey[100],
@@ -180,7 +249,6 @@ class CreateAccountScreenState extends State<CreateAccountScreen> {
                         _usernameController.text,
                         widget.phoneNumber,
                       );
-                      Get.off(() => const BottomNavigation());
                     }
                   }
                 },

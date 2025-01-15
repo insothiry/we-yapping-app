@@ -1,33 +1,32 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
-import 'package:we_yapping_app/src/screens/signup/create_account_screen.dart';
+import 'package:we_yapping_app/src/screens/bottom_navigation/bottom_navigation.dart';
 import 'package:we_yapping_app/src/utils/base_colors.dart';
 import 'package:we_yapping_app/src/widgets/base_button.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
-class OtpScreen extends StatefulWidget {
+class LoginOtpScreen extends StatefulWidget {
   final String phoneNumber;
 
-  const OtpScreen({super.key, required this.phoneNumber});
+  const LoginOtpScreen({super.key, required this.phoneNumber});
 
   @override
-  OtpScreenState createState() => OtpScreenState();
+  LoginOtpScreenState createState() => LoginOtpScreenState();
 }
 
-class OtpScreenState extends State<OtpScreen> {
+class LoginOtpScreenState extends State<LoginOtpScreen> {
   final TextEditingController _pinController = TextEditingController();
   String _currentText = '';
 
-  // Function to verify OTP with the server
   Future<void> verifyOtp() async {
     String enteredOtp = _pinController.text;
 
     if (enteredOtp.length == 6) {
       // Send the OTP to the backend for verification
       final response = await http.post(
-        Uri.parse('http://localhost:3000/api/users/verifyOtp'),
+        Uri.parse('http://localhost:3000/api/users/login'),
         headers: {'Content-Type': 'application/json'},
         body: json.encode({
           'phone': widget.phoneNumber,
@@ -38,8 +37,15 @@ class OtpScreenState extends State<OtpScreen> {
       print(response.body);
 
       if (response.statusCode == 200) {
-        // OTP verified successfully, navigate to the next screen
-        Get.offAll(() => CreateAccountScreen(phoneNumber: widget.phoneNumber));
+        // OTP verified successfully
+        final responseBody = json.decode(response.body);
+        final String userId = responseBody['data']['userId'];
+
+        // Print the userId to the console
+        print('Login successful! User ID: $userId');
+
+        // Navigate to BottomNavigation screen
+        Get.offAll(() => BottomNavigation(userId: userId));
       } else {
         // Handle OTP verification failure
         final responseBody = json.decode(response.body);
@@ -54,7 +60,7 @@ class OtpScreenState extends State<OtpScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text(
-          'Sign Up',
+          'Sign in',
           style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
         ),
       ),
@@ -62,14 +68,6 @@ class OtpScreenState extends State<OtpScreen> {
         padding: const EdgeInsets.all(12),
         child: Column(
           children: [
-            const Text(
-              "Step 2 out of 2",
-              textAlign: TextAlign.left,
-              style: TextStyle(
-                  color: BaseColor.primaryColor,
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold),
-            ),
             const Text(
               "Enter 6-digit verification code",
               style: TextStyle(fontSize: 36, fontWeight: FontWeight.bold),
@@ -80,8 +78,8 @@ class OtpScreenState extends State<OtpScreen> {
               style: TextStyle(color: Colors.grey),
             ),
             Text(
-              widget.phoneNumber, // Display the phone number
-              style: const TextStyle(color: BaseColor.primaryColor),
+              widget.phoneNumber,
+              style: TextStyle(color: BaseColor.primaryColor),
             ),
             const SizedBox(height: 10),
             PinCodeTextField(
